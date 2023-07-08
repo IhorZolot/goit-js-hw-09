@@ -10,22 +10,24 @@ let intervalId;
 
 startBtn.addEventListener('click', event => {
   console.log(event);
-  if (!event.target.disabled) {
-    event.target.disabled = true;
-    intervalId = setInterval(setRandomColor, 1000);
-  }
+  switchStatusButton(false);
+  intervalId = setInterval(setRandomColor, 1000);
 });
+function switchStatusButton(status) {
+  stopBtn.disabled = status;
+  startBtn.disabled = !status;
+}
 
 stopBtn.addEventListener('click', event => {
   console.log(event);
-  if (!event.target.disabled) {
-    event.target.disabled = false;
+  switchStatusButton(true);
 
-    clearInterval(intervalId);
-  }
+  clearInterval(intervalId);
 });
 
 function setRandomColor() {
   const randomColor = getRandomHexColor();
   document.body.style.backgroundColor = randomColor;
 }
+
+console.log('firsfsfdsfdt');

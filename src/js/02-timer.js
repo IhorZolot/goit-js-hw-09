@@ -1,77 +1,67 @@
-// import flatpickr from 'flatpickr';
-// import 'flatpickr/dist/flatpickr.min.css';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
-// const datetimePicker = document.querySelector('#datetime-picker');
+const datetimePicker = document.querySelector('#datetime-picker');
+const startButton = document.querySelector('[data-start]');
 
-// const options = {
-//   enableTime: true,
-//   time_24hr: true,
-//   defaultDate: new Date(),
-//   minuteIncrement: 1,
-//   onClose(selectedDates) {
-//     const selectedDate = selectedDates[0];
+const options = {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose(selectedDates) {
+    const selectedDate = selectedDates[0];
 
-//     if (selectedDate < new Date()) {
-//       alert('Please choose a date in the future');
-//       startBtn.disabled = true;
-//     } else {
-//       startBtn.disabled = false;
-//     }
-//   },
-// };
+    if (selectedDate <= new Date()) {
+      window.alert('Please choose a date in the future');
+    } else {
+      startButton.disabled = false;
+    }
+  },
+};
 
-// flatpickr(datetimePicker, options);
-// const startBtn = document.querySelector('[data-start]');
-// const daysValue = document.querySelector('[data-days]');
-// const hoursValue = document.querySelector('[data-hours]');
-// const minutesValue = document.querySelector('[data-minutes]');
-// const secondsValue = document.querySelector('[data-seconds]');
+flatpickr(datetimePicker, options);
 
-// let countdownIntervalId;
+let countdownInterval;
+let targetDate;
 
-// startBtn.addEventListener('click', () => {
-//   const selectedDate = flatpickr.parseDate(datetimePicker.value, 'Y-m-d H:i');
-//   const countdownDuration = selectedDate - new Date();
+startButton.addEventListener('click', () => {
+  startButton.setAttribute('disabled', true);
 
-//   startCountdown(countdownDuration);
-// });
+  targetDate = flatpickr.parseDate(datetimePicker.value);
 
-// function startCountdown(duration) {
-//   clearInterval(countdownIntervalId);
+  countdownInterval = setInterval(() => {
+    const currentDate = new Date();
+    const timeDifference = targetDate - currentDate;
 
-//   countdownIntervalId = setInterval(() => {
-//     if (duration <= 0) {
-//       clearInterval(countdownIntervalId);
-//       updateCountdownValues(0, 0, 0, 0);
-//       return;
-//     }
-//     const { days, hours, minutes, seconds } = convertMs(duration);
-//     updateCountdownValues(days, hours, minutes, seconds);
-//     duration -= 1000;
-//   }, 1000);
-// }
+    if (timeDifference <= 0) {
+      clearInterval(countdownInterval);
+      return;
+    }
 
-// function updateCountdownValues(days, hours, minutes, seconds) {
-//   daysValue.textContent = addLeadingZero(days);
-//   hoursValue.textContent = addLeadingZero(hours);
-//   minutesValue.textContent = addLeadingZero(minutes);
-//   secondsValue.textContent = addLeadingZero(seconds);
-// }
+    const convertDateDiff = convertMs(timeDifference);
+    for (const element in convertDateDiff) {
+      const value = convertDateDiff[element];
+      document.querySelector(`[data-${element}]`).textContent =
+        addLeadingZero(value);
+    }
+  }, 1000);
+});
 
-// function addLeadingZero(value) {
-//   return value.toString().padStart(2, '0');
-// }
+function addLeadingZero(value) {
+  return String(value).padStart(2, '0');
+}
 
-// function convertMs(ms) {
-//   const second = 1000;
-//   const minute = second * 60;
-//   const hour = minute * 60;
-//   const day = hour * 24;
+function convertMs(ms) {
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
 
-//   const days = Math.floor(ms / day);
-//   const hours = Math.floor((ms % day) / hour);
-//   const minutes = Math.floor(((ms % day) % hour) / minute);
-//   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const days = Math.floor(ms / day);
+  const hours = Math.floor((ms % day) / hour);
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
-//   return { days, hours, minutes, seconds };
-// }
+  return { days, hours, minutes, seconds };
+}

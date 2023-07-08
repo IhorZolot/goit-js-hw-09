@@ -1,48 +1,56 @@
-// function createPromise(position, delay) {
-//   const shouldResolve = Math.random() > 0.3;
-//   if (shouldResolve) {
-//     // Fulfill
-//   } else {
-//     // Reject
-//   }
-// }
-// function secondHomeWork() {
-//   const formEl = document.querySelector('.form');
+import Notiflix from 'notiflix';
 
-//   const onFormElSubmit = event => {
-//     event.preventDefault();
+function secondHomeWork() {
+  const formEl = document.querySelector('.form');
+  const subButton = document.querySelector('button');
 
-//     console.dir(event.target.elements);
+  const onFormElSubmit = event => {
+    event.preventDefault();
+    subButton.disabled = true;
+    console.dir(event.target.elements);
 
-//     const { delay, step, amount } = event.target.elements;
+    const { delay, step, amount } = event.target.elements;
+    console.log(amount.value);
 
-//     console.log(amount.value);
+    for (let i = 1; i <= Number(amount.value); i++) {
+      const currentDelay = Number(delay.value) + Number(step.value) * (i - 1);
+      setTimeout(() => {
+        createPromise(i, currentDelay)
+          .then(({ position, delay }) => {
+            Notiflix.Notify.success(
+              `✅ Fulfilled promise ${position} in ${delay}ms`,
+              {
+                position: 'center-left',
+                timeout: 5000,
+              }
+            );
+          })
+          .catch(({ position, delay }) => {
+            Notiflix.Notify.failure(
+              `❌ Rejected promise ${position} in ${delay}ms`,
+              {
+                position: 'center-left',
+                timeout: 5000,
+              }
+            );
+          });
+      }, currentDelay);
+    }
 
-//     for (let i = 1; i <= Number(amount.value); i++) {
-//       createPromise(i, Number(delay.value))
-//         .then(({ position, delay }) => {
-//           console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
-//         })
-//         .catch(({ position, delay }) => {
-//           console.log(`❌ Rejected promise ${position} in ${delay}ms`);
-//         });
-//     }
+    function createPromise(position, delay) {
+      const shouldResolve = Math.random() > 0.3;
+      const myPromise = new Promise((res, rej) => {
+        if (shouldResolve) {
+          res({ position, delay });
+        } else {
+          rej({ position, delay });
+        }
+      });
+      return myPromise;
+    }
+  };
 
-//     function createPromise(position, delay) {
-//       const shouldResolve = Math.random() > 0.3;
+  formEl.addEventListener('submit', onFormElSubmit);
+}
 
-//       const myPromise = new Promise((res, rej) => {
-//         if (shouldResolve) {
-//           res({ position, delay });
-//         } else {
-//           rej({ position, delay });
-//         }
-//       });
-//       return myPromise;
-//     }
-//   };
-
-//   formEl.addEventListener('submit', onFormElSubmit);
-// }
-
-// secondHomeWork();
+secondHomeWork();
