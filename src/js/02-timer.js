@@ -3,7 +3,8 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 const datetimePicker = document.querySelector('#datetime-picker');
 const startButton = document.querySelector('[data-start]');
-
+console.log('first')
+let targetDate;
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -16,6 +17,7 @@ const options = {
       window.alert('Please choose a date in the future');
     } else {
       startButton.disabled = false;
+      targetDate = selectedDate;
     }
   },
 };
@@ -23,16 +25,20 @@ const options = {
 flatpickr(datetimePicker, options);
 
 let countdownInterval;
-let targetDate;
+
 
 startButton.addEventListener('click', () => {
-  startButton.setAttribute('disabled', true);
+// startButton.setAttribute('disabled', true);
 
-  targetDate = flatpickr.parseDate(datetimePicker.value);
+  // targetDate = flatpickr.parseDate(datetimePicker.value);
 
   countdownInterval = setInterval(() => {
     const currentDate = new Date();
     const timeDifference = targetDate - currentDate;
+    console.log(timeDifference)
+    console.log(targetDate.getTime())
+    console.log(currentDate.getTime())
+
 
     if (timeDifference <= 0) {
       clearInterval(countdownInterval);
